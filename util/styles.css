@@ -1,0 +1,10 @@
+body{
+    background-color: #2b0036;
+}
+/*For debugging*/
+*{
+    font-family: sans-serif;
+    color: white;
+    border: 1px solid red;
+    stroke: antiquewhite;
+}
