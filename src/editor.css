@@ -1,0 +1,60 @@
+.editor-window-menu-bar-item {
+    padding: 2px 5px;
+    cursor: pointer;
+}
+
+.editor-window-menu-bar-item:hover {
+    background: #111;
+}
+
+.editor-menu-bar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.editor-application-title {
+    text-align: center;
+    width: 100%;
+}
+
+.editor-minimize-button-mac {
+    border-radius: 50%;
+    width: 11px;
+    height: 11px;
+    background: #00ca4e;
+}
+
+.editor-maximize-button-mac {
+    border-radius: 50%;
+    width: 11px;
+    height: 11px;
+    background: #ffbd44;
+}
+
+.editor-close-button-mac {
+    border-radius: 50%;
+    width: 11px;
+    height: 11px;
+    background: #ff605c;
+}
+
+.editor-action-buttons-mac {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 5px;
+}
+
+.editor-title-bar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+}
