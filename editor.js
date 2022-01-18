@@ -306,8 +306,4 @@ class EditorWindow{
         workspace.append(sideBar);
         sideBar.append(treeViewContainer);
     }
-
-    getSideBar(){
-
-    }
 }

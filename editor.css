@@ -1,3 +1,9 @@
+.editor-window{
+    background: #2b2b2b;
+    margin: auto;
+    width: 90%;
+}
+
 .editor-window-menu-bar-item {
     padding: 2px 5px;
     cursor: pointer;
