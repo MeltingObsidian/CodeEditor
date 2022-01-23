@@ -1,5 +1,5 @@
 class EditorFile{
-    constructor(name, content="", temporary=false, contentType="text", language="", totype="", callback=()=>{}){
+    constructor(name, content="", temporary=false, contentType="text", language="plaintext", totype="", callback=()=>{}){
         this.name = name;
         this.content = content;
         this.temporary = temporary;
@@ -80,11 +80,12 @@ class EditorWindowMenuBarItem{
 }
 
 class EditorActivityBarItem{
-    constructor(name, icon, alert=[], callback=()=>{}){
-        this.name = name;
-        this.icon = icon;
-        this.alert = alert;
-        this.callback = callback;
+    constructor(name, icon, path, alert=[], callback=()=>{}){
+        this._name = name;
+        this._icon = icon;
+        this._path = path;
+        this._alert = alert;
+        this._callback = callback();
     }
 
     get name(){
@@ -97,15 +98,20 @@ class EditorActivityBarItem{
         return this._alert;
     }
     get callback(){
-        return this._callback;
+        return this._callback();
     }
     getItem(){
         var element = $('<div class="activity-bar-item"></div>');
-        var icon = $('<img class="activity-bar-item-icon" src="'+this.icon+'"></img>');
-        var name = $('<div class="activity-bar-item-name">'+this.name+'</div>');
+        var icon = $('<object class="activity-bar-item-icon" type="image/svg+xml" data="'+this.path+"/"+this.icon+'"></object>');
+        icon.css("filter", "invert(1)")
         element.append(icon);
-        element.append(name);
-        element.click(this.callback);
+        tippy(element[0], {
+            content: this.name,
+            arrow: false,
+            allowHTML: true,
+            placement: 'right', 
+            delay: [0, 0],
+        })
         return element;
     }
 
@@ -121,16 +127,20 @@ class EditorActivityBarItem{
     set callback(value){
         this._callback = value;
     }
+
+    toggleSelection(){
+        $('.activity-bar-item').toggleClass('selected')
+    }
 }
 
 var defaults = {
-    activityBarTopItems: [new EditorActivityBarItem("Explorer (Ctrl+Shift+E)", "explorer.png", [], () =>{}), 
-                        new EditorActivityBarItem("Search (Ctrl+Shift+F)", "search.png", [], () =>{}), 
-                        new EditorActivityBarItem("Source Control (Ctrl+Shift+G", "source_control.png", [], () =>{}), 
-                        new EditorActivityBarItem("Run and Debug (Ctrl+Shift+D", "run_debug.png", [], () =>{}), 
-                        new EditorActivityBarItem("Extensions (Ctrl+Shift+X", "extensions.png", [], () =>{})],
-    activityBarBottomItems: [new EditorActivityBarItem("Accounts", "accounts.png", [], () =>{}),
-                            new EditorActivityBarItem("Manage", "manage.png", [], () =>{})],
+    activityBarTopItems: [new EditorActivityBarItem("Explorer (Ctrl+Shift+E)", "files.svg", "assets/icons", [], () =>{}), 
+                        new EditorActivityBarItem("Search (Ctrl+Shift+F)", "search.svg", "assets/icons", [], () =>{}), 
+                        new EditorActivityBarItem("Source Control (Ctrl+Shift+G)", "source-control.svg", "assets/icons", [], () =>{}), 
+                        new EditorActivityBarItem("Run and Debug (Ctrl+Shift+D)", "debug-alt.svg", "assets/icons", [], () =>{}), 
+                        new EditorActivityBarItem("Extensions (Ctrl+Shift+X)", "extensions.svg", "assets/icons", [], () =>{})],
+    activityBarBottomItems: [new EditorActivityBarItem("Accounts", "account.svg", "assets/icons", [], () =>{}),
+                            new EditorActivityBarItem("Manage", "settings-gear.svg", "assets/icons", [], () =>{})],
     gettingStartedHTML: `
                         <h1>Visual Studio Code</h1>
                         <h2>Editing Evolved</h2>
@@ -265,15 +275,33 @@ class EditorWindow{
         activityBar.append(activityBarTop);
         if (options.activityBarTop === 'default') {
             for (const item in defaults.activityBarTopItems){
-                activityBarTop.append(defaults.activityBarTopItems[item].getItem());
+                var element = defaults.activityBarTopItems[item].getItem()
+                element.click(element.callback(sideBar))
+                activityBarTop.append();
+                if (item==0){
+                    var first = defaults.activityBarTopItems[item]
+                    first.toggleSelection()
+                    first.callback = (sidebar) =>{
+                        var title = $("<div class='editor-side-bar-title'>Explorer</div>")
+                        var widgets = $("<div class='editor-side-bar-widgets'><object class='activity-bar-item-icon' type='image/svg+xml' data='assets/icons/ellipsis'></object></div>")
+                        var container = $("<div class='file-explorer-container'></div>")
+                        var file1 = $("")
+                    }
+                }
             }
         } else if (options.activityBarTop === 'custom'){
             for (const item in options.customActivityBarTopItems){
                 activityBarTop.append(options.customActivityBarTopItems[item].getItem());
+                if (item==0){
+                    options.customActivityBarTopItems[item].toggleSelection()
+                }
             }
         } else if (options.activityBarTop === 'extend') {
             for (const item in defaults.activityBarTopItems){
                 activityBarTop.append(defaults.activityBarTopItems[item].getItem());
+                if (item==0){
+                    defaults.activityBarTopItems[item].toggleSelection()
+                }
             }
             for (const item in options.customActivityBarTopItems){
                 activityBarTop.append(options.customActivityBarTopItems[item].getItem());
